@@ -1,0 +1,9 @@
+{
+    "Phlogin": {
+        "screenshot": ".images\\phlogin-screenshot.png",
+        "source": "https://mail.ru/",
+        "strategy": "css",
+        "type": "browser",
+        "value": ".ph-login"
+    }
+}
