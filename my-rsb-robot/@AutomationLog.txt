@@ -1,4 +1,0 @@
-2023-11-10 16:56:19.593 locators.py[274] _get_control_from_params -> Find Control Timeout(10s): {Name: 'учз'}
-2023-11-10 16:56:27.104 locators.py[274] _get_control_from_params -> Find Control Timeout(10s): {Name: 'ex'}
-2023-11-10 16:56:37.366 locators.py[274] _get_control_from_params -> Find Control Timeout(10s): {Name: '|x|'}
-2023-11-10 16:57:00.198 locators.py[274] _get_control_from_params -> 
