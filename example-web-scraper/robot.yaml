@@ -1,0 +1,14 @@
+tasks:
+  Web scraper Python:
+    command:
+      - python
+      - tasks.py
+
+condaConfigFile: conda.yaml
+artifactsDir: output
+ignoreFiles:
+  - .gitignore
+PATH:
+  - .
+PYTHONPATH:
+  - .
