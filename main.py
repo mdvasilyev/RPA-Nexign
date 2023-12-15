@@ -1,12 +1,15 @@
 import os
+import psycopg2
 import subprocess
 from dotenv import load_dotenv
-# import psycopg2
-from robot.api import TestSuite
-from robot import run
+from fastapi import FastAPI
+from fastapi.responses import HTMLResponse
 
 
-def load_connection_params():
+app = FastAPI()
+
+
+def load_connection_params() -> dict:
     load_dotenv()  # Загружаем переменные окружения из файла .env
     connection_params = {
         'dbname': os.getenv('DB_NAME'),
@@ -18,18 +21,73 @@ def load_connection_params():
     return connection_params
 
 
-def run_robot_tasks(folder_path):
+conn = psycopg2.connect(**load_connection_params())
+cur = conn.cursor()
+conn.autocommit = True
+
+
+@app.get("/")
+def read_root():
+    html_content = "<h2>Robocorp Control room analogue</h2>"
+    return HTMLResponse(content=html_content)
+
+
+@app.get("/robots")
+def show_robots():
+    cur.execute("""select *
+                from scripts;""")
+    result = cur.fetchall()
+    return result
+
+
+@app.get("/robots/{id}")
+def show_robot_by_id(id: int):
+    cur.execute(f"""select *
+                from scripts
+                where id = {id};""")
+    result = cur.fetchone()
+    return result
+
+
+def run_robot_tasks(folder_path) -> None:
     os.chdir(folder_path)
     subprocess.run(["rcc", "run"]) 
 
 
-def main():
-    connection_params = load_connection_params()
-    print(connection_params)
+# cur.close()
+# conn.close()
 
-    folder_path_from_database = "/Users/mayxi/CodeProjects/RPA-Nexign/example-windows-calculator"
+# def main():
+#     conn = psycopg2.connect(**load_connection_params())
+#     cur = conn.cursor()
+#     conn.autocommit = True
 
-    run_robot_tasks(folder_path_from_database)
+#     # cur.execute("""create table scripts (
+#     #             id int primary key,
+#     #             name varchar(255),
+#     #             path text
+#     #             );
+#     # """)
 
-if __name__ == '__main__':
-    main()
+#     # cur.execute("""insert into scripts (id, name, path) values
+#     #             (1, 'calculator', '/Users/mayxi/CodeProjects/RPA-Nexign/example-windows-calculator'),
+#     #             (2, 'web-scraper', '/Users/mayxi/CodeProjects/RPA-Nexign/example-web-scraper')
+#     # """)
+
+#     cur.execute("""select path
+#                 from scripts
+#                 where name = 'calculator'
+#                 """)
+
+#     # conn.commit()
+
+#     path = cur.fetchone()[0]
+
+#     run_robot_tasks(path)
+
+#     cur.close()
+#     conn.close()
+
+
+# if __name__ == '__main__':
+#     main()
